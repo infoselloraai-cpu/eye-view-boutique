@@ -8,3 +8,6 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Branding (name, tagline, logo icon, currency) lives only in src/config/site.ts — components import from it so the brand can be renamed in one place.
+- Catalog is placeholder data in src/data/products.ts; cart state is a React Context (src/lib/cart.tsx) persisted to localStorage — swap for an API later without touching pages.
