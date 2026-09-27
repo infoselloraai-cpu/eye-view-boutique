@@ -9,8 +9,8 @@ import { Slider } from "@/components/ui/slider";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>): { category?: string } => ({
-    category: typeof s.category === "string" ? s.category : undefined,
+  validateSearch: (s: Record<string, unknown>): { category?: string | undefined } => ({
+    category: typeof s["category"] === "string" ? (s["category"] as string) : undefined,
   }),
   head: () => meta("Shop All Eyewear", "Browse eyeglasses, sunglasses and blue light glasses. Filter by shape, gender, price and color."),
   component: Shop,
@@ -35,7 +35,7 @@ function Shop() {
   const [genders, setGenders] = useState<Gender[]>([]);
   const [shapes, setShapes] = useState<Shape[]>([]);
   const [colors, setColors] = useState<string[]>([]);
-  const [range, setRange] = useState<number[]>([0, MAX]);
+  const [range, setRange] = useState<[number, number]>([0, MAX]);
   const [sort, setSort] = useState("featured");
   const [page, setPage] = useState(1);
   const [showFilters, setShowFilters] = useState(false);
@@ -89,7 +89,7 @@ function Shop() {
           </div>
           <div>
             <h3 className="mb-3 font-semibold">Price Range</h3>
-            <Slider min={0} max={MAX} step={500} value={range} onValueChange={(v) => { setRange(v); reset(); }} />
+            <Slider min={0} max={MAX} step={500} value={range} onValueChange={(v) => { setRange([v[0] ?? 0, v[1] ?? MAX]); reset(); }} />
             <div className="mt-2 flex justify-between text-xs text-muted-foreground"><span>{formatPrice(range[0])}</span><span>{formatPrice(range[1])}{range[1] === MAX ? "+" : ""}</span></div>
           </div>
           <div>
