@@ -9,7 +9,7 @@ import { Slider } from "@/components/ui/slider";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/shop")({
-  validateSearch: (s: Record<string, unknown>) => ({
+  validateSearch: (s: Record<string, unknown>): { category?: string } => ({
     category: typeof s.category === "string" ? s.category : undefined,
   }),
   head: () => meta("Shop All Eyewear", "Browse eyeglasses, sunglasses and blue light glasses. Filter by shape, gender, price and color."),

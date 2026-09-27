@@ -1,6 +1,6 @@
 import { formatPrice } from "@/config/site";
 
-export function Price({ price, oldPrice, large }: { price: number; oldPrice?: number; large?: boolean }) {
+export function Price({ price, oldPrice, large }: { price: number; oldPrice?: number | undefined; large?: boolean }) {
   return (
     <div className="flex items-baseline gap-2">
       <span className={large ? "text-3xl font-bold" : "font-semibold"}>{formatPrice(price)}</span>

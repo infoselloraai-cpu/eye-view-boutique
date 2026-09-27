@@ -34,7 +34,7 @@ function CartPage() {
   };
 
   const next = () => {
-    if (step === 0 && (!ship.name || !ship.phone || !ship.address)) return toast.error("Please fill in your shipping info");
+    if (step === 0 && (!ship.name || !ship.phone || !ship.address)) { toast.error("Please fill in your shipping info"); return; }
     if (step === 2) { setOrderId("EV" + Math.floor(100000 + Math.random() * 900000)); cart.clear(); }
     setStep(step + 1);
   };

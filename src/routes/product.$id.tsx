@@ -43,7 +43,7 @@ function ProductPage() {
   const { add } = useCart();
   const navigate = useNavigate();
   const [img, setImg] = useState(0);
-  const [color, setColor] = useState(p.colors[0].name);
+  const [color, setColor] = useState(p.colors[0]?.name ?? "");
   const [size, setSize] = useState("Medium");
   const [qty, setQty] = useState(1);
   const [tab, setTab] = useState<(typeof TABS)[number]>("Description");

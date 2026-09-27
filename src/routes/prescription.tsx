@@ -77,7 +77,7 @@ function Prescription() {
               <span className="mt-4 rounded-md bg-primary px-5 py-2 text-sm text-primary-foreground">Choose File</span>
               <input type="file" accept=".jpg,.jpeg,.png,.pdf" className="hidden" onChange={(e) => {
                 const f = e.target.files?.[0];
-                if (f && f.size > 5 * 1024 * 1024) return toast.error("File too large (max 5MB)");
+                if (f && f.size > 5 * 1024 * 1024) { toast.error("File too large (max 5MB)"); return; }
                 setFile(f ?? null);
               }} />
             </label>

@@ -5,7 +5,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/track")({
-  validateSearch: (s: Record<string, unknown>) => ({ id: typeof s.id === "string" ? s.id : undefined }),
+  validateSearch: (s: Record<string, unknown>): { id?: string } => ({ id: typeof s.id === "string" ? s.id : undefined }),
   head: () => meta("Track Your Order", "Enter your order number or tracking ID to see live delivery status."),
   component: Track,
 });
