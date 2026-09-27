@@ -17,7 +17,7 @@ function TryOn() {
   const [idx, setIdx] = useState(0);
   const [camErr, setCamErr] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);
-  const frame = products[idx];
+  const frame = products[idx] ?? products[0]!;
 
   useEffect(() => {
     if (tab !== "camera") return;

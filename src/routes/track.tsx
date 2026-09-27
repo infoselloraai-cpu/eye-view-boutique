@@ -43,7 +43,7 @@ function Track() {
             <ol className="mt-8">
               {result.map((r, i) => (
                 <li key={r.stage} className="relative flex gap-4 pb-8 last:pb-0">
-                  {i < result.length - 1 && <span className={`absolute left-[11px] top-6 h-full w-0.5 ${result[i + 1].done ? "bg-primary" : "bg-border"}`} />}
+                  {i < result.length - 1 && <span className={`absolute left-[11px] top-6 h-full w-0.5 ${result[i + 1]?.done ? "bg-primary" : "bg-border"}`} />}
                   <span className={`relative grid h-6 w-6 shrink-0 place-items-center rounded-full ${r.done ? "bg-primary text-primary-foreground" : "border-2 border-border bg-card"}`}>{r.done && <Check className="h-3.5 w-3.5" />}</span>
                   <div><p className={`text-sm ${r.done ? "font-semibold" : "text-muted-foreground"}`}>{r.stage}</p>{r.date && <p className="text-xs text-muted-foreground">{r.date}</p>}</div>
                 </li>
