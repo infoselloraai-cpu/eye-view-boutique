@@ -2,7 +2,7 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { Camera, ChevronLeft, ChevronRight, ImagePlus } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
-import { products } from "@/data/products";
+import { useProducts } from "@/lib/catalog";
 import { formatPrice } from "@/config/site";
 import { meta } from "@/lib/meta";
 
@@ -14,6 +14,7 @@ export const Route = createFileRoute("/try-on")({
 function TryOn() {
   const [tab, setTab] = useState<"upload" | "camera">("upload");
   const [photo, setPhoto] = useState<string | null>(null);
+  const products = useProducts();
   const [idx, setIdx] = useState(0);
   const [camErr, setCamErr] = useState("");
   const videoRef = useRef<HTMLVideoElement>(null);

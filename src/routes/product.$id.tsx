@@ -1,8 +1,9 @@
-import { createFileRoute, Link, notFound, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useState } from "react";
 import { Feather, Heart, Minus, Plus, ShieldCheck, Sparkles, Sun } from "lucide-react";
 import { toast } from "sonner";
-import { getProduct, products } from "@/data/products";
+import { getProduct } from "@/data/products";
+import { useCatalog } from "@/lib/catalog";
 import { Stars } from "@/components/Stars";
 import { Price } from "@/components/Price";
 import { ProductCard } from "@/components/ProductCard";
@@ -12,8 +13,7 @@ import { SITE_NAME } from "@/config/site";
 export const Route = createFileRoute("/product/$id")({
   loader: ({ params }) => {
     const p = getProduct(params.id);
-    if (!p) throw notFound();
-    return { id: p.id, name: p.name, category: p.category };
+    return { id: params.id, name: p?.name ?? "Eyewear", category: p?.category ?? "Eyewear" };
   },
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
@@ -39,7 +39,15 @@ const TABS = ["Description", "Specifications", "Shipping & Return", "Reviews"] a
 
 function ProductPage() {
   const { id } = Route.useLoaderData();
-  const p = getProduct(id)!;
+  const { products, loaded } = useCatalog();
+  const found = products.find((x) => x.id === id);
+  if (!found) {
+    return <div className="container-page py-20 text-center"><h1 className="font-display text-3xl">{loaded ? "Product not found" : "Loading…"}</h1><Link to="/shop" className="mt-4 inline-block underline">Back to shop</Link></div>;
+  }
+  return <ProductView key={found.id} p={found} products={products} />;
+}
+
+function ProductView({ p, products }: { p: import("@/data/products").Product; products: import("@/data/products").Product[] }) {
   const { add } = useCart();
   const navigate = useNavigate();
   const [img, setImg] = useState(0);

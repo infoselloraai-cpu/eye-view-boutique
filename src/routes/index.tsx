@@ -5,7 +5,7 @@ import sunglasses from "@/assets/sunglasses.jpg";
 import eyeglasses from "@/assets/eyeglasses.jpg";
 import bluelight from "@/assets/bluelight.jpg";
 import { SITE_NAME, SITE_TAGLINE, FREE_SHIPPING_MIN, formatPrice } from "@/config/site";
-import { products } from "@/data/products";
+import { useProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { meta } from "@/lib/meta";
 
@@ -90,7 +90,7 @@ function Home() {
       <section className="container-page py-16">
         <h2 className="mb-8 font-display text-3xl font-bold md:text-4xl">Bestsellers</h2>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
-          {products.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}
+          {bestsellers.slice(0, 4).map((p) => <ProductCard key={p.id} product={p} />)}
         </div>
       </section>
     </>
