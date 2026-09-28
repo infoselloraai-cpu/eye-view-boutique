@@ -1,5 +1,7 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useServerFn } from "@tanstack/react-start";
+import { trackOrder } from "@/lib/orders.functions";
 import { Check, Package } from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { meta } from "@/lib/meta";
@@ -11,34 +13,32 @@ export const Route = createFileRoute("/track")({
 });
 
 const STAGES = ["Order Placed", "Processing", "Shipped", "Delivered"];
-
-// Placeholder lookup — replace with an API call later.
-function lookup(id: string) {
-  const n = id.split("").reduce((a, c) => a + c.charCodeAt(0), 0);
-  const reached = (n % 3) + 1;
-  const base = Date.now() - reached * 86400000;
-  return STAGES.map((s, i) => ({
-    stage: s,
-    done: i < reached,
-    date: i < reached ? new Date(base + i * 86400000).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }) : null,
-  }));
-}
+type Order = Awaited<ReturnType<typeof trackOrder>>;
 
 function Track() {
   const { id } = Route.useSearch();
   const [q, setQ] = useState(id ?? "");
-  const [result, setResult] = useState(id ? lookup(id) : null);
-  const delivered = result?.every((r) => r.done);
+  const [order, setOrder] = useState<Order | undefined>(undefined);
+  const fetchOrder = useServerFn(trackOrder);
+  const run = async (v: string) => { try { setOrder(await fetchOrder({ data: { id: v } })); } catch { setOrder(null); } };
+  useEffect(() => { if (id) run(id); }, [id]); // eslint-disable-line react-hooks/exhaustive-deps
+  const cancelled = order?.status === "Cancelled";
+  const reached = order ? Math.max(0, STAGES.indexOf(order.status)) + 1 : 0;
+  const result = order && !cancelled ? STAGES.map((s, i) => ({ stage: s, done: i < reached, date: i === reached - 1 ? new Date(order.updated_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }) : i === 0 ? new Date(order.created_at).toLocaleString("en-GB", { dateStyle: "medium", timeStyle: "short" }) : null })) : null;
+  const delivered = order?.status === "Delivered";
 
   return (
     <>
       <PageHeader title="Track Your Order" subtitle="Enter your order number or tracking ID." />
       <div className="container-page grid gap-6 md:grid-cols-2">
         <div className="rounded-2xl bg-card p-6 shadow-soft">
-          <form onSubmit={(e) => { e.preventDefault(); if (q.trim()) setResult(lookup(q.trim())); }} className="flex gap-2">
+          <form onSubmit={(e) => { e.preventDefault(); if (q.trim()) run(q.trim()); }} className="flex gap-2">
             <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Order Number / Tracking ID" className="w-full rounded-md border border-input bg-background px-3 py-2 text-sm" />
             <button className="rounded-md bg-primary px-6 text-sm text-primary-foreground">Track</button>
           </form>
+          {order === null && <p className="mt-6 text-sm text-destructive">No order found with that ID.</p>}
+          {cancelled && <p className="mt-6 text-sm font-semibold text-destructive">This order was cancelled.</p>}
+          {order && <p className="mt-6 text-sm text-muted-foreground">Payment: <b>{order.payment_method}</b> — {order.payment_status}</p>}
           {result && (
             <ol className="mt-8">
               {result.map((r, i) => (

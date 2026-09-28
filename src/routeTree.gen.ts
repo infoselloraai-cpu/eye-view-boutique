@@ -11,11 +11,14 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CartRouteImport } from './routes/cart'
+import { Route as PaymentResultRouteImport } from './routes/payment-result'
 import { Route as PrescriptionRouteImport } from './routes/prescription'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as TryOnRouteImport } from './routes/try-on'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
+import { Route as ApiPublicPaymentsBkashRouteImport } from './routes/api/public/payments/bkash'
+import { Route as ApiPublicPaymentsSslcommerzRouteImport } from './routes/api/public/payments/sslcommerz'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -25,6 +28,11 @@ const IndexRoute = IndexRouteImport.update({
 const CartRoute = CartRouteImport.update({
   id: '/cart',
   path: '/cart',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PaymentResultRoute = PaymentResultRouteImport.update({
+  id: '/payment-result',
+  path: '/payment-result',
   getParentRoute: () => rootRouteImport,
 } as any)
 const PrescriptionRoute = PrescriptionRouteImport.update({
@@ -52,73 +60,105 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsBkashRoute = ApiPublicPaymentsBkashRouteImport.update({
+  id: '/api/public/payments/bkash',
+  path: '/api/public/payments/bkash',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ApiPublicPaymentsSslcommerzRoute =
+  ApiPublicPaymentsSslcommerzRouteImport.update({
+    id: '/api/public/payments/sslcommerz',
+    path: '/api/public/payments/sslcommerz',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
+  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
+  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/cart': typeof CartRoute
+  '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
   '/product/$id': typeof ProductIdRoute
+  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
+  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/cart'
+    | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
     | '/product/$id'
+    | '/api/public/payments/bkash'
+    | '/api/public/payments/sslcommerz'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/cart'
+    | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
     | '/product/$id'
+    | '/api/public/payments/bkash'
+    | '/api/public/payments/sslcommerz'
   id:
     | '__root__'
     | '/'
     | '/cart'
+    | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
     | '/product/$id'
+    | '/api/public/payments/bkash'
+    | '/api/public/payments/sslcommerz'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   CartRoute: typeof CartRoute
+  PaymentResultRoute: typeof PaymentResultRoute
   PrescriptionRoute: typeof PrescriptionRoute
   ShopRoute: typeof ShopRoute
   TrackRoute: typeof TrackRoute
   TryOnRoute: typeof TryOnRoute
   ProductIdRoute: typeof ProductIdRoute
+  ApiPublicPaymentsBkashRoute: typeof ApiPublicPaymentsBkashRoute
+  ApiPublicPaymentsSslcommerzRoute: typeof ApiPublicPaymentsSslcommerzRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -135,6 +175,13 @@ declare module '@tanstack/react-router' {
       path: '/cart'
       fullPath: '/cart'
       preLoaderRoute: typeof CartRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/payment-result': {
+      id: '/payment-result'
+      path: '/payment-result'
+      fullPath: '/payment-result'
+      preLoaderRoute: typeof PaymentResultRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/prescription': {
@@ -172,17 +219,34 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/payments/bkash': {
+      id: '/api/public/payments/bkash'
+      path: '/api/public/payments/bkash'
+      fullPath: '/api/public/payments/bkash'
+      preLoaderRoute: typeof ApiPublicPaymentsBkashRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/sslcommerz': {
+      id: '/api/public/payments/sslcommerz'
+      path: '/api/public/payments/sslcommerz'
+      fullPath: '/api/public/payments/sslcommerz'
+      preLoaderRoute: typeof ApiPublicPaymentsSslcommerzRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   CartRoute: CartRoute,
+  PaymentResultRoute: PaymentResultRoute,
   PrescriptionRoute: PrescriptionRoute,
   ShopRoute: ShopRoute,
   TrackRoute: TrackRoute,
   TryOnRoute: TryOnRoute,
   ProductIdRoute: ProductIdRoute,
+  ApiPublicPaymentsBkashRoute: ApiPublicPaymentsBkashRoute,
+  ApiPublicPaymentsSslcommerzRoute: ApiPublicPaymentsSslcommerzRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
