@@ -4,6 +4,7 @@ import {
   Link,
   createRootRouteWithContext,
   useRouter,
+  useRouterState,
   HeadContent,
   Scripts,
 } from "@tanstack/react-router";
@@ -12,6 +13,7 @@ import { useEffect, type ReactNode } from "react";
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
 import { CartProvider } from "@/lib/cart";
+import { CatalogProvider } from "@/lib/catalog";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Toaster } from "@/components/ui/sonner";
@@ -115,17 +117,23 @@ function RootShell({ children }: { children: ReactNode }) {
 
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
+  const path = useRouterState({ select: (s) => s.location.pathname });
+  const isAdmin = path.startsWith("/admin") || path === "/auth";
 
   return (
     <QueryClientProvider client={queryClient}>
-      <CartProvider>
-        <Header />
-        <main className="min-h-[60vh]">
-          <Outlet />
-        </main>
-        <Footer />
-        <Toaster />
-      </CartProvider>
+      <CatalogProvider>
+        <CartProvider>
+          {isAdmin ? <Outlet /> : (<>
+            <Header />
+            <main className="min-h-[60vh]">
+              <Outlet />
+            </main>
+            <Footer />
+          </>)}
+          <Toaster />
+        </CartProvider>
+      </CatalogProvider>
     </QueryClientProvider>
   );
 }

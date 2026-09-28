@@ -29,6 +29,7 @@ const cats = [
 ] as const;
 
 function Home() {
+  const bestsellers = useProducts();
   return (
     <>
       <section className="relative overflow-hidden">
