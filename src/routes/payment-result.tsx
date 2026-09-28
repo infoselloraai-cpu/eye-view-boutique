@@ -5,7 +5,7 @@ import { useCart } from "@/lib/cart";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/payment-result")({
-  validateSearch: (s: Record<string, unknown>): { id?: string; status?: string } => ({
+  validateSearch: (s: Record<string, unknown>): { id?: string | undefined; status?: string | undefined } => ({
     id: typeof s["id"] === "string" ? s["id"] : undefined,
     status: typeof s["status"] === "string" ? s["status"] : undefined,
   }),

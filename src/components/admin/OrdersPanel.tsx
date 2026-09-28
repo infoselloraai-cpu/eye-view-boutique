@@ -23,7 +23,7 @@ export function OrdersPanel() {
 
   const setStatus = async (id: string, status: string) => {
     const { error } = await db.from("orders").update({ status }).eq("id", id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setOrders((o) => o.map((x) => (x.id === id ? { ...x, status } : x)));
     toast.success("Status updated");
   };

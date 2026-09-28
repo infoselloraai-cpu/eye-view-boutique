@@ -19,9 +19,9 @@ export function CouponsPanel() {
   const add = async (e: React.FormEvent) => {
     e.preventDefault();
     const c = code.trim().toUpperCase();
-    if (!c || percent < 1 || percent > 90) return toast.error("Enter a code and 1–90% off");
+    if (!c || percent < 1 || percent > 90) { toast.error("Enter a code and 1–90% off"); return; }
     const { error } = await db.from("coupons").insert({ code: c, percent });
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     setCode(""); load();
   };
   const toggle = async (c: Coupon) => { await db.from("coupons").update({ active: !c.active }).eq("id", c.id); load(); };

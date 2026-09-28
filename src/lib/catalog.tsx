@@ -26,7 +26,7 @@ export function rowToProduct(r: ProductRow): Product {
   const img = r.image_url || categoryImage(r.category);
   return {
     id: r.id, name: r.name, category: r.category as Product["category"], gender: r.gender as Product["gender"],
-    shape: r.shape as Product["shape"], price: r.price, oldPrice: r.old_price ?? undefined,
+    shape: r.shape as Product["shape"], price: r.price, ...(r.old_price ? { oldPrice: r.old_price } : {}),
     rating: Number(r.rating), reviews: r.reviews, colors: r.colors ?? [], images: [img, img, img],
     isNew: r.is_new, stock: r.stock,
     description: r.description || `Elevate your style with the ${r.name}. Premium lenses, 100% UV protection and a lightweight frame for all-day comfort.`,

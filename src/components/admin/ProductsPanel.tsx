@@ -21,10 +21,10 @@ export function ProductsPanel() {
   const save = async () => {
     if (!edit) return;
     const { _new, ...row } = edit;
-    if (!row.name.trim()) return toast.error("Name is required");
+    if (!row.name.trim()) { toast.error("Name is required"); return; }
     if (_new) row.id = slug(row.name) || `p-${Date.now()}`;
     const { error } = _new ? await db.from("products").insert(row) : await db.from("products").update(row).eq("id", row.id);
-    if (error) return toast.error(error.message);
+    if (error) { toast.error(error.message); return; }
     toast.success("Saved"); setEdit(null); load();
   };
 
