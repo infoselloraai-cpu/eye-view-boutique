@@ -1,5 +1,6 @@
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from "react";
-import { getProduct, type Product } from "@/data/products";
+import type { Product } from "@/data/products";
+import { useProducts } from "@/lib/catalog";
 
 export interface CartItem {
   key: string;
@@ -24,6 +25,7 @@ const STORAGE = "cart-v1";
 
 export function CartProvider({ children }: { children: ReactNode }) {
   const [items, setItems] = useState<CartItem[]>([]);
+  const products = useProducts();
 
   useEffect(() => {
     try {
@@ -37,7 +39,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
 
   const value = useMemo<CartCtx>(() => {
     const full = items
-      .map((i) => ({ ...i, product: getProduct(i.productId)! }))
+      .map((i) => ({ ...i, product: products.find((p) => p.id === i.productId)! }))
       .filter((i) => i.product);
     return {
       items: full,
@@ -55,7 +57,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
       remove: (key) => setItems((prev) => prev.filter((i) => i.key !== key)),
       clear: () => setItems([]),
     };
-  }, [items]);
+  }, [items, products]);
 
   return <Ctx.Provider value={value}>{children}</Ctx.Provider>;
 }

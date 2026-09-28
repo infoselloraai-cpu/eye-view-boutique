@@ -3,7 +3,10 @@ import { useState } from "react";
 import { Check, Lock, Minus, Plus, X } from "lucide-react";
 import { toast } from "sonner";
 import { useCart } from "@/lib/cart";
-import { formatPrice, FREE_SHIPPING_MIN, SHIPPING_FEE } from "@/config/site";
+import { formatPrice } from "@/config/site";
+import { useServerFn } from "@tanstack/react-start";
+import { checkCoupon, placeOrder } from "@/lib/orders.functions";
+import { useSettings } from "@/lib/catalog";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/cart")({
@@ -12,8 +15,11 @@ export const Route = createFileRoute("/cart")({
 });
 
 const STEPS = ["Shipping Info", "Payment", "Review", "Confirmation"];
-const PAYMENTS = ["bKash", "Nagad", "Rocket", "Card (SSLCommerz)", "Cash on Delivery"];
-const COUPONS: Record<string, number> = { EYE10: 0.1 };
+const PAYMENTS = [
+  { id: "bKash", label: "bKash" },
+  { id: "SSLCommerz", label: "Card / Nagad / Rocket (SSLCommerz)" },
+  { id: "COD", label: "Cash on Delivery" },
+] as const;
 
 function CartPage() {
   const cart = useCart();
@@ -23,19 +29,41 @@ function CartPage() {
   const [pay, setPay] = useState("bKash");
   const [ship, setShip] = useState({ name: "", phone: "", address: "", city: "Dhaka" });
   const [orderId, setOrderId] = useState("");
+  const [busy, setBusy] = useState(false);
+  const settings = useSettings();
+  const couponFn = useServerFn(checkCoupon);
+  const orderFn = useServerFn(placeOrder);
+  const FREE_SHIPPING_MIN = settings.free_shipping_min, SHIPPING_FEE = settings.shipping_fee;
 
   const disc = Math.round(cart.subtotal * discount);
   const shipping = cart.subtotal - disc >= FREE_SHIPPING_MIN || cart.subtotal === 0 ? 0 : SHIPPING_FEE;
   const total = cart.subtotal - disc + shipping;
 
-  const applyCoupon = () => {
-    const d = COUPONS[coupon.trim().toUpperCase()];
-    if (d) { setDiscount(d); toast.success("Coupon applied"); } else toast.error("Invalid coupon code");
+  const applyCoupon = async () => {
+    if (!coupon.trim()) return;
+    const r = await couponFn({ data: { code: coupon } });
+    if (r.valid) { setDiscount(r.percent / 100); toast.success("Coupon applied"); } else { setDiscount(0); toast.error("Invalid coupon code"); }
   };
 
-  const next = () => {
+  const next = async () => {
     if (step === 0 && (!ship.name || !ship.phone || !ship.address)) { toast.error("Please fill in your shipping info"); return; }
-    if (step === 2) { setOrderId("EV" + Math.floor(100000 + Math.random() * 900000)); cart.clear(); }
+    if (step === 2) {
+      setBusy(true);
+      try {
+        const r = await orderFn({ data: {
+          items: cart.items.map((i) => ({ productId: i.productId, color: i.color, size: i.size, qty: i.qty })),
+          name: ship.name, phone: ship.phone.replace(/[\s-]/g, ""), address: ship.address, city: ship.city,
+          payment: pay as "bKash" | "SSLCommerz" | "COD", coupon: discount ? coupon : undefined,
+        } });
+        if (r.redirect) { window.location.href = r.redirect; return; }
+        setOrderId(r.orderId); cart.clear();
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : "Something went wrong";
+        toast.error(msg.startsWith("[") ? "Please check your details and try again" : msg);
+        setBusy(false); return;
+      }
+      setBusy(false);
+    }
     setStep(step + 1);
   };
 
@@ -118,8 +146,8 @@ function CartPage() {
             <div className="space-y-2">
               <p className="mb-2 text-sm font-semibold">Payment Method</p>
               {PAYMENTS.map((m) => (
-                <label key={m} className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-sm ${pay === m ? "border-primary" : "border-border"}`}>
-                  <input type="radio" name="pay" checked={pay === m} onChange={() => setPay(m)} className="accent-primary" /> {m}
+                <label key={m.id} className={`flex cursor-pointer items-center gap-3 rounded-md border px-3 py-2.5 text-sm ${pay === m.id ? "border-primary" : "border-border"}`}>
+                  <input type="radio" name="pay" checked={pay === m.id} onChange={() => setPay(m.id)} className="accent-primary" /> {m.label}
                 </label>
               ))}
             </div>
@@ -128,7 +156,7 @@ function CartPage() {
             <div className="space-y-1 text-sm">
               <p><b>Ship to:</b> {ship.name}, {ship.phone}</p>
               <p className="text-muted-foreground">{ship.address}, {ship.city}</p>
-              <p className="pt-2"><b>Payment:</b> {pay}</p>
+              <p className="pt-2"><b>Payment:</b> {PAYMENTS.find((m) => m.id === pay)?.label}</p>
             </div>
           )}
           {step === 3 && (
@@ -151,8 +179,8 @@ function CartPage() {
             </dl>
             <div className="mt-5 flex gap-2">
               {step > 0 && <button onClick={() => setStep(step - 1)} className="rounded-md border border-border px-4 text-sm">Back</button>}
-              <button onClick={next} className="flex-1 rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground">
-                {step === 0 ? "Proceed to Payment" : step === 1 ? "Review Order" : "Place Order"}
+              <button onClick={next} disabled={busy} className="flex-1 disabled:opacity-60 rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground">
+                {step === 0 ? "Proceed to Payment" : step === 1 ? "Review Order" : busy ? "Please wait…" : pay === "COD" ? "Place Order" : "Pay Now"}
               </button>
             </div>
             <p className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground"><Lock className="h-3 w-3" /> Your information is safe and secure</p>

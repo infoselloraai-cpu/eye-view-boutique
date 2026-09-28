@@ -21,6 +21,7 @@ export interface Product {
   images: string[];
   isNew?: boolean;
   description: string;
+  stock?: number;
 }
 
 const C = {
@@ -55,5 +56,7 @@ export const products: Product[] = raw.map((p) => ({
   images: [img[p.category], img[p.category], img[p.category]],
   description: `Elevate your style with the ${p.name}. Designed for those who value both fashion and function, featuring premium lenses, 100% UV protection and a lightweight frame for all-day comfort.`,
 }));
+
+export const categoryImage = (c: string) => img[c as Category] ?? eyeglasses;
 
 export const getProduct = (id: string) => products.find((p) => p.id === id);

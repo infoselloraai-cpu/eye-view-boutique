@@ -1,7 +1,8 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useMemo, useState } from "react";
 import { SlidersHorizontal } from "lucide-react";
-import { products, type Category, type Gender, type Shape } from "@/data/products";
+import { useProducts } from "@/lib/catalog";
+import { type Category, type Gender, type Shape } from "@/data/products";
 import { ProductCard } from "@/components/ProductCard";
 import { PageHeader } from "@/components/PageHeader";
 import { formatPrice } from "@/config/site";
@@ -19,7 +20,6 @@ export const Route = createFileRoute("/shop")({
 const CATS: Category[] = ["Eyeglasses", "Sunglasses", "Blue Light"];
 const GENDERS: Gender[] = ["Men", "Women", "Unisex"];
 const SHAPES: Shape[] = ["Rectangle", "Round", "Square", "Aviator", "Cat Eye"];
-const COLORS = Array.from(new Map(products.flatMap((p) => p.colors).map((c) => [c.name, c])).values());
 const PER_PAGE = 6;
 const MAX = 10000;
 
@@ -28,6 +28,8 @@ function toggle<T>(arr: T[], v: T) {
 }
 
 function Shop() {
+  const products = useProducts();
+  const COLORS = Array.from(new Map(products.flatMap((p) => p.colors).map((c) => [c.name, c])).values());
   const { category } = Route.useSearch();
   const navigate = useNavigate({ from: "/shop" });
   const [cats, setCats] = useState<string[]>(category && category !== "New" ? [category] : []);
@@ -54,7 +56,7 @@ function Shop() {
     if (sort === "high") r = [...r].sort((a, b) => b.price - a.price);
     if (sort === "rating") r = [...r].sort((a, b) => b.rating - a.rating);
     return r;
-  }, [cats, onlyNew, genders, shapes, colors, range, sort]);
+  }, [products, cats, onlyNew, genders, shapes, colors, range, sort]);
 
   const pages = Math.max(1, Math.ceil(list.length / PER_PAGE));
   const current = Math.min(page, pages);
