@@ -10,12 +10,15 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CartRouteImport } from './routes/cart'
 import { Route as PaymentResultRouteImport } from './routes/payment-result'
 import { Route as PrescriptionRouteImport } from './routes/prescription'
 import { Route as ShopRouteImport } from './routes/shop'
 import { Route as TrackRouteImport } from './routes/track'
 import { Route as TryOnRouteImport } from './routes/try-on'
+import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
 import { Route as ApiPublicPaymentsBkashRouteImport } from './routes/api/public/payments/bkash'
 import { Route as ApiPublicPaymentsSslcommerzRouteImport } from './routes/api/public/payments/sslcommerz'
@@ -23,6 +26,15 @@ import { Route as ApiPublicPaymentsSslcommerzRouteImport } from './routes/api/pu
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
+  id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthRoute = AuthRouteImport.update({
+  id: '/auth',
+  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CartRoute = CartRouteImport.update({
@@ -55,6 +67,11 @@ const TryOnRoute = TryOnRouteImport.update({
   path: '/try-on',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => AuthenticatedRouteRoute,
+} as any)
 const ProductIdRoute = ProductIdRouteImport.update({
   id: '/product/$id',
   path: '/product/$id',
@@ -74,24 +91,28 @@ const ApiPublicPaymentsSslcommerzRoute =
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
   '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
+  '/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
   '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
@@ -99,12 +120,15 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/auth': typeof AuthRoute
   '/cart': typeof CartRoute
   '/payment-result': typeof PaymentResultRoute
   '/prescription': typeof PrescriptionRoute
   '/shop': typeof ShopRoute
   '/track': typeof TrackRoute
   '/try-on': typeof TryOnRoute
+  '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
   '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
   '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
@@ -113,36 +137,43 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/auth'
     | '/cart'
     | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
+    | '/admin'
     | '/product/$id'
     | '/api/public/payments/bkash'
     | '/api/public/payments/sslcommerz'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/auth'
     | '/cart'
     | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
+    | '/admin'
     | '/product/$id'
     | '/api/public/payments/bkash'
     | '/api/public/payments/sslcommerz'
   id:
     | '__root__'
     | '/'
+    | '/_authenticated'
+    | '/auth'
     | '/cart'
     | '/payment-result'
     | '/prescription'
     | '/shop'
     | '/track'
     | '/try-on'
+    | '/_authenticated/admin'
     | '/product/$id'
     | '/api/public/payments/bkash'
     | '/api/public/payments/sslcommerz'
@@ -150,6 +181,8 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AuthRoute: typeof AuthRoute
   CartRoute: typeof CartRoute
   PaymentResultRoute: typeof PaymentResultRoute
   PrescriptionRoute: typeof PrescriptionRoute
@@ -168,6 +201,20 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/_authenticated': {
+      id: '/_authenticated'
+      path: ''
+      fullPath: '/'
+      preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/auth': {
+      id: '/auth'
+      path: '/auth'
+      fullPath: '/auth'
+      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cart': {
@@ -212,6 +259,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TryOnRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/_authenticated/admin': {
+      id: '/_authenticated/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AuthenticatedAdminRouteImport
+      parentRoute: typeof AuthenticatedRouteRoute
+    }
     '/product/$id': {
       id: '/product/$id'
       path: '/product/$id'
@@ -236,8 +290,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AuthenticatedRouteRouteChildren {
+  AuthenticatedAdminRoute: typeof AuthenticatedAdminRoute
+}
+
+const AuthenticatedRouteRouteChildren: AuthenticatedRouteRouteChildren = {
+  AuthenticatedAdminRoute: AuthenticatedAdminRoute,
+}
+
+const AuthenticatedRouteRouteWithChildren =
+  AuthenticatedRouteRoute._addFileChildren(AuthenticatedRouteRouteChildren)
+
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AuthRoute: AuthRoute,
   CartRoute: CartRoute,
   PaymentResultRoute: PaymentResultRoute,
   PrescriptionRoute: PrescriptionRoute,
