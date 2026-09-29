@@ -44,14 +44,18 @@ export type Database = {
           city: string
           coupon_code: string | null
           created_at: string
+          customer_ip: string | null
           customer_name: string
           discount: number
+          email: string | null
           gateway_ref: string | null
           id: string
           items: Json
           payment_method: string
           payment_status: string
           phone: string
+          prescription: Json | null
+          sender_number: string | null
           shipping: number
           status: string
           subtotal: number
@@ -64,14 +68,18 @@ export type Database = {
           city: string
           coupon_code?: string | null
           created_at?: string
+          customer_ip?: string | null
           customer_name: string
           discount?: number
+          email?: string | null
           gateway_ref?: string | null
           id: string
           items?: Json
           payment_method: string
           payment_status?: string
           phone: string
+          prescription?: Json | null
+          sender_number?: string | null
           shipping?: number
           status?: string
           subtotal?: number
@@ -84,19 +92,47 @@ export type Database = {
           city?: string
           coupon_code?: string | null
           created_at?: string
+          customer_ip?: string | null
           customer_name?: string
           discount?: number
+          email?: string | null
           gateway_ref?: string | null
           id?: string
           items?: Json
           payment_method?: string
           payment_status?: string
           phone?: string
+          prescription?: Json | null
+          sender_number?: string | null
           shipping?: number
           status?: string
           subtotal?: number
           total?: number
           transaction_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      pages: {
+        Row: {
+          body: string
+          slug: string
+          sort: number
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          body?: string
+          slug: string
+          sort?: number
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          slug?: string
+          sort?: number
+          title?: string
           updated_at?: string
         }
         Relationships: []
@@ -113,6 +149,7 @@ export type Database = {
           image_url: string | null
           is_new: boolean
           name: string
+          offer_percent: number
           old_price: number | null
           price: number
           rating: number
@@ -133,6 +170,7 @@ export type Database = {
           image_url?: string | null
           is_new?: boolean
           name: string
+          offer_percent?: number
           old_price?: number | null
           price?: number
           rating?: number
@@ -153,6 +191,7 @@ export type Database = {
           image_url?: string | null
           is_new?: boolean
           name?: string
+          offer_percent?: number
           old_price?: number | null
           price?: number
           rating?: number
@@ -167,32 +206,53 @@ export type Database = {
       site_settings: {
         Row: {
           announcement: string
+          business_address: string
           contact_email: string
           contact_phone: string
+          content: Json
           free_shipping_min: number
           id: number
           payment_mode: string
+          payment_number: string
+          piprapay_url: string
           shipping_fee: number
+          shipping_inside: number
+          shipping_outside: number
+          social: Json
           updated_at: string
         }
         Insert: {
           announcement?: string
+          business_address?: string
           contact_email?: string
           contact_phone?: string
+          content?: Json
           free_shipping_min?: number
           id?: number
           payment_mode?: string
+          payment_number?: string
+          piprapay_url?: string
           shipping_fee?: number
+          shipping_inside?: number
+          shipping_outside?: number
+          social?: Json
           updated_at?: string
         }
         Update: {
           announcement?: string
+          business_address?: string
           contact_email?: string
           contact_phone?: string
+          content?: Json
           free_shipping_min?: number
           id?: number
           payment_mode?: string
+          payment_number?: string
+          piprapay_url?: string
           shipping_fee?: number
+          shipping_inside?: number
+          shipping_outside?: number
+          social?: Json
           updated_at?: string
         }
         Relationships: []
