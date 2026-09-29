@@ -10,14 +10,13 @@ import { useSettings } from "@/lib/catalog";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/cart")({
-  head: () => meta("Cart & Checkout", "Review your cart and check out securely with bKash, Nagad, Rocket, card or cash on delivery."),
+  head: () => meta("Cart & Checkout", "Review your cart and check out securely with bKash, Nagad, Rocket or cash on delivery."),
   component: CartPage,
 });
 
 const STEPS = ["Shipping Info", "Payment", "Review", "Confirmation"];
 const PAYMENTS = [
-  { id: "bKash", label: "bKash" },
-  { id: "SSLCommerz", label: "Card / Nagad / Rocket (SSLCommerz)" },
+  { id: "Manual", label: "bKash / Nagad / Rocket (Send Money)" },
   { id: "COD", label: "Cash on Delivery" },
 ] as const;
 
@@ -26,17 +25,17 @@ function CartPage() {
   const [step, setStep] = useState(0);
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
-  const [pay, setPay] = useState("bKash");
+  const [pay, setPay] = useState("Manual");
   const [ship, setShip] = useState({ name: "", phone: "", address: "", city: "Dhaka" });
   const [orderId, setOrderId] = useState("");
   const [busy, setBusy] = useState(false);
   const settings = useSettings();
   const couponFn = useServerFn(checkCoupon);
   const orderFn = useServerFn(placeOrder);
-  const FREE_SHIPPING_MIN = settings.free_shipping_min, SHIPPING_FEE = settings.shipping_fee;
+  const [trx, setTrx] = useState({ sender: "", id: "" });
 
   const disc = Math.round(cart.subtotal * discount);
-  const shipping = cart.subtotal - disc >= FREE_SHIPPING_MIN || cart.subtotal === 0 ? 0 : SHIPPING_FEE;
+  const shipping = cart.subtotal === 0 ? 0 : ship.city === "Dhaka" ? settings.shipping_inside : settings.shipping_outside;
   const total = cart.subtotal - disc + shipping;
 
   const applyCoupon = async () => {
@@ -53,7 +52,7 @@ function CartPage() {
         const r = await orderFn({ data: {
           items: cart.items.map((i) => ({ productId: i.productId, color: i.color, size: i.size, qty: i.qty })),
           name: ship.name, phone: ship.phone.replace(/[\s-]/g, ""), address: ship.address, city: ship.city,
-          payment: pay as "bKash" | "SSLCommerz" | "COD", coupon: discount ? coupon : undefined,
+          payment: pay as "Manual" | "COD", senderNumber: trx.sender || undefined, trxId: trx.id || undefined, coupon: discount ? coupon : undefined,
         } });
         if (r.redirect) { window.location.href = r.redirect; return; }
         setOrderId(r.orderId); cart.clear();
@@ -150,6 +149,13 @@ function CartPage() {
                   <input type="radio" name="pay" checked={pay === m.id} onChange={() => setPay(m.id)} className="accent-primary" /> {m.label}
                 </label>
               ))}
+              {pay === "Manual" && (
+                <div className="space-y-2 rounded-md bg-secondary p-3 text-sm">
+                  <p>Send <b>{formatPrice(total)}</b> to <b>{settings.payment_number}</b> (Send Money), then enter the details below. Your order is confirmed after we verify it.</p>
+                  <input className={input} placeholder="Your sending number (01XXXXXXXXX)" value={trx.sender} onChange={(e) => setTrx({ ...trx, sender: e.target.value })} />
+                  <input className={input} placeholder="Transaction ID" value={trx.id} onChange={(e) => setTrx({ ...trx, id: e.target.value })} />
+                </div>
+              )}
             </div>
           )}
           {step === 2 && (
@@ -180,7 +186,7 @@ function CartPage() {
             <div className="mt-5 flex gap-2">
               {step > 0 && <button onClick={() => setStep(step - 1)} className="rounded-md border border-border px-4 text-sm">Back</button>}
               <button onClick={next} disabled={busy} className="flex-1 disabled:opacity-60 rounded-md bg-primary py-3 text-sm font-medium text-primary-foreground">
-                {step === 0 ? "Proceed to Payment" : step === 1 ? "Review Order" : busy ? "Please wait…" : pay === "COD" ? "Place Order" : "Pay Now"}
+                {step === 0 ? "Proceed to Payment" : step === 1 ? "Review Order" : busy ? "Please wait…" : "Place Order"}
               </button>
             </div>
             <p className="mt-3 flex items-center justify-center gap-1 text-xs text-muted-foreground"><Lock className="h-3 w-3" /> Your information is safe and secure</p>
