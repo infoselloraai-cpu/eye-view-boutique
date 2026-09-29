@@ -4,19 +4,19 @@ import hero from "@/assets/hero.jpg";
 import sunglasses from "@/assets/sunglasses.jpg";
 import eyeglasses from "@/assets/eyeglasses.jpg";
 import bluelight from "@/assets/bluelight.jpg";
-import { SITE_NAME, SITE_TAGLINE, FREE_SHIPPING_MIN, formatPrice } from "@/config/site";
+import { SITE_NAME, SITE_TAGLINE } from "@/config/site";
 import { useProducts } from "@/lib/catalog";
 import { ProductCard } from "@/components/ProductCard";
 import { meta } from "@/lib/meta";
 
 export const Route = createFileRoute("/")({
-  head: () => meta("Premium Eyewear", "Shop stylish eyeglasses, sunglasses and blue light glasses with free shipping and easy returns across Bangladesh."),
+  head: () => meta("Premium Eyewear", "Shop stylish eyeglasses, sunglasses and blue light glasses  across Bangladesh."),
   component: Home,
 });
 
 const badges = [
-  { icon: Truck, title: "Free Shipping", sub: `On orders over ${formatPrice(FREE_SHIPPING_MIN)}` },
-  { icon: RotateCcw, title: "30 Days Return", sub: "Hassle free returns" },
+  { icon: Truck, title: "Fast Delivery", sub: "All over Bangladesh" },
+  { icon: RotateCcw, title: "Easy Support", sub: "We are here to help" },
   { icon: BadgeCheck, title: "100% Authentic", sub: "Original branded products" },
   { icon: CreditCard, title: "Secure Payment", sub: "bKash, Nagad, Card & COD" },
 ];

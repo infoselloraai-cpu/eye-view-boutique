@@ -5,7 +5,7 @@ import { db, type ProductRow } from "@/lib/catalog";
 import { categoryImage } from "@/data/products";
 import { formatPrice } from "@/config/site";
 
-const empty: ProductRow = { id: "", name: "", category: "Eyeglasses", gender: "Unisex", shape: "Rectangle", price: 0, old_price: null, rating: 4.5, reviews: 0, colors: [{ name: "Black", hex: "#1a1a1a" }], image_url: null, is_new: false, description: "", stock: 10, active: true, sort: 0 };
+const empty: ProductRow = { id: "", name: "", category: "Eyeglasses", gender: "Unisex", shape: "Rectangle", price: 0, old_price: null, offer_percent: 0, rating: 4.5, reviews: 0, colors: [{ name: "Black", hex: "#1a1a1a" }], image_url: null, is_new: false, description: "", stock: 10, active: true, sort: 0 };
 const slug = (s: string) => s.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
 
 export function ProductsPanel() {

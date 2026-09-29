@@ -18,7 +18,7 @@ export const Route = createFileRoute("/product/$id")({
   head: ({ loaderData }) => {
     if (!loaderData) return { meta: [{ title: "Not found" }, { name: "robots", content: "noindex" }] };
     const t = `${loaderData.name} ${loaderData.category} — ${SITE_NAME}`;
-    const d = `Buy ${loaderData.name} ${loaderData.category.toLowerCase()} online with UV protection, free shipping and 30-day returns.`;
+    const d = `Buy ${loaderData.name} ${loaderData.category.toLowerCase()} online with UV protection.`;
     return { meta: [{ title: t }, { name: "description", content: d }, { property: "og:title", content: t }, { property: "og:description", content: d }, { property: "og:type", content: "product" }, { name: "twitter:card", content: "summary_large_image" }] };
   },
   component: ProductPage,
@@ -134,7 +134,7 @@ function ProductView({ p, products }: { p: import("@/data/products").Product; pr
               ))}
             </tbody></table>
           )}
-          {tab === "Shipping & Return" && <p>Dhaka: 1–2 working days. Outside Dhaka: 2–5 working days. Free shipping over ৳1,500. Return within 30 days of receiving your order.</p>}
+          {tab === "Shipping & Return" && <p>Dhaka: 1–2 working days. Outside Dhaka: 2–5 working days.</p>}
           {tab === "Reviews" && (
             <div className="space-y-4">
               {[["Rahim A.", 5, "Excellent quality, fits perfectly."], ["Nusrat J.", 4, "Stylish and light. Delivery was quick."]].map(([n, r, t]) => (
