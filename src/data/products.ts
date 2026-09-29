@@ -15,9 +15,10 @@ export interface Product {
   shape: Shape;
   price: number;
   oldPrice?: number;
+  offerPercent?: number;
   rating: number;
   reviews: number;
-  colors: { name: string; hex: string }[];
+  colors: { name: string; hex: string; image?: string }[];
   images: string[];
   isNew?: boolean;
   description: string;

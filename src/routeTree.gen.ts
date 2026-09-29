@@ -20,8 +20,7 @@ import { Route as TrackRouteImport } from './routes/track'
 import { Route as TryOnRouteImport } from './routes/try-on'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
 import { Route as ProductIdRouteImport } from './routes/product.$id'
-import { Route as ApiPublicPaymentsBkashRouteImport } from './routes/api/public/payments/bkash'
-import { Route as ApiPublicPaymentsSslcommerzRouteImport } from './routes/api/public/payments/sslcommerz'
+import { Route as ApiPublicPaymentsPiprapayRouteImport } from './routes/api/public/payments/piprapay'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -77,15 +76,10 @@ const ProductIdRoute = ProductIdRouteImport.update({
   path: '/product/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPaymentsBkashRoute = ApiPublicPaymentsBkashRouteImport.update({
-  id: '/api/public/payments/bkash',
-  path: '/api/public/payments/bkash',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicPaymentsSslcommerzRoute =
-  ApiPublicPaymentsSslcommerzRouteImport.update({
-    id: '/api/public/payments/sslcommerz',
-    path: '/api/public/payments/sslcommerz',
+const ApiPublicPaymentsPiprapayRoute =
+  ApiPublicPaymentsPiprapayRouteImport.update({
+    id: '/api/public/payments/piprapay',
+    path: '/api/public/payments/piprapay',
     getParentRoute: () => rootRouteImport,
   } as any)
 
@@ -100,8 +94,7 @@ export interface FileRoutesByFullPath {
   '/try-on': typeof TryOnRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
-  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
-  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
+  '/api/public/payments/piprapay': typeof ApiPublicPaymentsPiprapayRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -114,8 +107,7 @@ export interface FileRoutesByTo {
   '/try-on': typeof TryOnRoute
   '/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
-  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
-  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
+  '/api/public/payments/piprapay': typeof ApiPublicPaymentsPiprapayRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -130,8 +122,7 @@ export interface FileRoutesById {
   '/try-on': typeof TryOnRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
   '/product/$id': typeof ProductIdRoute
-  '/api/public/payments/bkash': typeof ApiPublicPaymentsBkashRoute
-  '/api/public/payments/sslcommerz': typeof ApiPublicPaymentsSslcommerzRoute
+  '/api/public/payments/piprapay': typeof ApiPublicPaymentsPiprapayRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -146,8 +137,7 @@ export interface FileRouteTypes {
     | '/try-on'
     | '/admin'
     | '/product/$id'
-    | '/api/public/payments/bkash'
-    | '/api/public/payments/sslcommerz'
+    | '/api/public/payments/piprapay'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -160,8 +150,7 @@ export interface FileRouteTypes {
     | '/try-on'
     | '/admin'
     | '/product/$id'
-    | '/api/public/payments/bkash'
-    | '/api/public/payments/sslcommerz'
+    | '/api/public/payments/piprapay'
   id:
     | '__root__'
     | '/'
@@ -175,8 +164,7 @@ export interface FileRouteTypes {
     | '/try-on'
     | '/_authenticated/admin'
     | '/product/$id'
-    | '/api/public/payments/bkash'
-    | '/api/public/payments/sslcommerz'
+    | '/api/public/payments/piprapay'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -190,8 +178,7 @@ export interface RootRouteChildren {
   TrackRoute: typeof TrackRoute
   TryOnRoute: typeof TryOnRoute
   ProductIdRoute: typeof ProductIdRoute
-  ApiPublicPaymentsBkashRoute: typeof ApiPublicPaymentsBkashRoute
-  ApiPublicPaymentsSslcommerzRoute: typeof ApiPublicPaymentsSslcommerzRoute
+  ApiPublicPaymentsPiprapayRoute: typeof ApiPublicPaymentsPiprapayRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -273,18 +260,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProductIdRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/payments/bkash': {
-      id: '/api/public/payments/bkash'
-      path: '/api/public/payments/bkash'
-      fullPath: '/api/public/payments/bkash'
-      preLoaderRoute: typeof ApiPublicPaymentsBkashRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/payments/sslcommerz': {
-      id: '/api/public/payments/sslcommerz'
-      path: '/api/public/payments/sslcommerz'
-      fullPath: '/api/public/payments/sslcommerz'
-      preLoaderRoute: typeof ApiPublicPaymentsSslcommerzRouteImport
+    '/api/public/payments/piprapay': {
+      id: '/api/public/payments/piprapay'
+      path: '/api/public/payments/piprapay'
+      fullPath: '/api/public/payments/piprapay'
+      preLoaderRoute: typeof ApiPublicPaymentsPiprapayRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -312,8 +292,7 @@ const rootRouteChildren: RootRouteChildren = {
   TrackRoute: TrackRoute,
   TryOnRoute: TryOnRoute,
   ProductIdRoute: ProductIdRoute,
-  ApiPublicPaymentsBkashRoute: ApiPublicPaymentsBkashRoute,
-  ApiPublicPaymentsSslcommerzRoute: ApiPublicPaymentsSslcommerzRoute,
+  ApiPublicPaymentsPiprapayRoute: ApiPublicPaymentsPiprapayRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
